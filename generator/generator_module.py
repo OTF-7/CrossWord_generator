@@ -16,7 +16,10 @@ direction = True
 
 def print_crossword():
     print(f"""
-        {f.BLUE}                        0      1      2      3      4      5   {f.RESET} 
+
+                        {f.CYAN}{s.BRIGHT}{question_list}{f.RESET}{s.RESET_ALL}
+        
+        {f.BLUE}                         0      1      2      3      4      5   {f.RESET} 
                         ------------------------------------------------
                          {f.RED}0{f.RESET}   |   {f.MAGENTA}{cross_word_letters[0][0]}{f.RESET}  |   {f.MAGENTA}{cross_word_letters[0][1]}{f.RESET}  |   {f.MAGENTA}{cross_word_letters[0][2]}{f.RESET}  |   {f.MAGENTA}{cross_word_letters[0][3]}{f.RESET}  |   {f.MAGENTA}{cross_word_letters[0][4]}{f.RESET}  |   {f.MAGENTA}{cross_word_letters[0][5]}{f.RESET}  | 
                              |------|------|------|------|------|------|     
@@ -61,18 +64,18 @@ class Generator:
     @staticmethod
     def generate():
         initialize()
-        global row_index, column_index
-        # for x in indexed_word_list:
-        #     print(dict(x).keys())
-        #     for y in dict(x).values():
-        #         print(y)
+        global row_index, column_index, direction
         while words_list:
             dictionary = dict(random.choice(words_list))
             answer, question = dictionary.values()
             words_list.remove(dictionary)
             Generator.fill(answer)
+            question_list.append({question, f"from ({row_index}) to (" + str(len(answer) - 1) + ")"})
             row_index += 1
-            print_crossword()
+            if row_index == 6:
+                row_index = 0
+            break
+        print_crossword()
 
     @staticmethod
     def fill(word):
@@ -94,5 +97,3 @@ class Generator:
     def check(word, row_index, column_index):
         return True
 
-
-Generator.generate()
