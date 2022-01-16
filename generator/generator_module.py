@@ -15,9 +15,11 @@ direction = True
 
 
 def print_crossword():
+    for d in question_list:
+        for question, period in dict(d).items():
+            print(
+                f"                        {f.RED}{s.BRIGHT}The question is: {f.BLUE}{question} {f.RED}and it is placed in {f.MAGENTA}{period}{f.RESET}{s.RESET_ALL}")
     print(f"""
-
-                        {f.CYAN}{s.BRIGHT}{question_list}{f.RESET}{s.RESET_ALL}
         
         {f.BLUE}                         0      1      2      3      4      5   {f.RESET} 
                         ------------------------------------------------
@@ -65,16 +67,19 @@ class Generator:
     def generate():
         initialize()
         global row_index, column_index, direction
-        while words_list:
+        i = 0
+        while i < 6:
             dictionary = dict(random.choice(words_list))
             answer, question = dictionary.values()
             words_list.remove(dictionary)
             Generator.fill(answer)
-            question_list.append({question, f"from ({row_index}) to (" + str(len(answer) - 1) + ")"})
+            d = dict()
+            d[question] = f"({row_index}, {column_index}) to ({row_index}, " + str(len(answer) - 1) + ")"
+            question_list.append(d)
             row_index += 1
             if row_index == 6:
                 row_index = 0
-            break
+            i += 1
         print_crossword()
 
     @staticmethod
@@ -96,4 +101,3 @@ class Generator:
     @staticmethod
     def check(word, row_index, column_index):
         return True
-
