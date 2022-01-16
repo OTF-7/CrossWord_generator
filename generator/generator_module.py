@@ -1,18 +1,17 @@
+from utilities.questions import words_list
+import random
 from utilities.terminal_colors import Fore as f, Back as b, Style as s
-from generator.generator_module import Generator
 
-cross_word_letters = [["Y", "E", "M", "E", "N", "-"],
-                      ["E", "A", "S", "Y", "-", "F"],
-                      ["A", "-", "-", "-", "-", "R"],
-                      ["R", "I", "N", "G", "-", "O"],
-                      ["-", "_", "F", "R", "O", "G"],
+cross_word_letters = [["-", "-", "-", "-", "-", "-"],
+                      ["-", "-", "-", "-", "-", "-"],
+                      ["-", "-", "-", "-", "-", "-"],
+                      ["-", "-", "-", "-", "-", "-"],
+                      ["-", "-", "-", "-", "-", "-"],
                       ["-", "-", "-", "-", "-", "-"]]
-
-
-def main():
-    global cross_word_letters
-    # cross_word_letters = Generator.generate(cross_word_letters)
-    print_crossword()
+indexed_word_list = []
+question_list = []
+row_index = column_index = 0
+direction = True
 
 
 def print_crossword():
@@ -35,5 +34,65 @@ def print_crossword():
     """)
 
 
-if __name__ == "__main__":
-    main()
+def initialize():
+    for l in "abcdefghijklmnopqrstuvwxyz":
+        sub_dict = dict()
+        answers = list()
+        for d in words_list:
+            answer, question = d.values()
+            if str(answer).startswith(l):
+                answers.append(answer)
+        if len(answers) > 0:
+            sub_dict[l] = answers
+            indexed_word_list.append(sub_dict)
+
+
+def swap():
+    global row_index, column_index
+    temp = row_index
+    row_index = column_index
+    column_index = temp
+
+
+class Generator:
+    def __init__(self):
+        pass
+
+    @staticmethod
+    def generate():
+        initialize()
+        global row_index, column_index
+        # for x in indexed_word_list:
+        #     print(dict(x).keys())
+        #     for y in dict(x).values():
+        #         print(y)
+        while words_list:
+            dictionary = dict(random.choice(words_list))
+            answer, question = dictionary.values()
+            words_list.remove(dictionary)
+            Generator.fill(answer)
+            row_index += 1
+            print_crossword()
+
+    @staticmethod
+    def fill(word):
+        global cross_word_letters, row_index, column_index, direction
+        if not direction:
+            swap()
+        for x in word:
+            cross_word_letters[row_index][column_index] = x
+            column_index += 1
+        if column_index < 5:
+            column_index += 1
+            cross_word_letters[row_index][column_index] = "-"
+        column_index = 0
+        if not direction:
+            direction = not direction
+            swap()
+
+    @staticmethod
+    def check(word, row_index, column_index):
+        return True
+
+
+Generator.generate()
